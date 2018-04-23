@@ -1,0 +1,74 @@
+
+# coding: utf-8
+
+# In[31]:
+
+
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[33]:
+
+
+ds = pd.read_csv('C:\\Users\\Dell\\Desktop\\train.csv')
+print(ds.shape)
+
+
+# In[34]:
+
+
+data = ds.values
+print(data.shape)
+
+
+# In[42]:
+
+
+y_train =data[:, 0]
+X_train =data[:, 1:]
+id=int(np.random.random()*X_train.shape[0])
+# X_train = (X_train - X_train.mean(axis=0))/(X_train.std(axis=0) + 1e-03)
+print(y_train.shape,X_train.shape)
+plt.figure(0)
+idx=104
+print(y_train[idx])
+plt.imshow(X_train[idx].reshape((28,28)),cmap='gray')
+plt.show()
+
+
+# In[36]:
+
+
+def dist(x1,x2) :
+    return np.sqrt(((x1-x2)**2).sum())
+
+
+# In[40]:
+
+
+def knn(X_train,x,y_train,k=5) :
+    val =[]
+    for i in range(X_train.shape[0]) :
+        v=[dist(x,X_train[i,: ]),y_train[i]]
+        val.append(v)
+    updated_val = sorted(val,key=lambda x : x[0])
+    p = np.asarray(updated_val[:k])
+    p=np.unique(p[:, 1],return_counts=True)
+    pred= p[1].argmax()
+    return p,p[0][pred]
+
+
+# In[43]:
+
+
+q=X_train[id]
+result =knn(X_train[:10000],q,y_train[:10000],k=7)
+print(result)
+print(y_train[id])
+plt.figure(0)
+plt.imshow(q.reshape((28,28)),cmap='gray')
+plt.show()
+
